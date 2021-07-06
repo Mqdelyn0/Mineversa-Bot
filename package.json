@@ -1,0 +1,73 @@
+{
+  "name": "mineversa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "ts-node-dev --respawn --transpile-only --poll ./src/index.ts",
+    "lint": "prettier --write .",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-angular": "^12.1.4",
+    "@types/glob": "^7",
+    "@types/mongoose": "^5",
+    "@types/node": "^15.12.5",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.2",
+    "ts-node": "^10.0.0",
+    "ts-node-dev": "^1.1.7",
+    "typescript": "^4.3.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn dlx @yarnpkg/doctor && lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.ts": "prettier --write",
+    "*.js": "prettier --write"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-angular"
+    ],
+    "rules": {
+      "scope-case": [
+        2,
+        "always",
+        "pascal-case"
+      ],
+      "type-enum": [
+        2,
+        "always",
+        [
+          "chore",
+          "build",
+          "ci",
+          "docs",
+          "feat",
+          "fix",
+          "perf",
+          "refactor",
+          "revert",
+          "style",
+          "test"
+        ]
+      ]
+    }
+  },
+  "dependencies": {
+    "canvas": "^2.8.0",
+    "consola": "^2.15.3",
+    "discord.js": "^12.5.3",
+    "glob": "^7.1.7",
+    "mongoose": "^5.13.0"
+  }
+}
