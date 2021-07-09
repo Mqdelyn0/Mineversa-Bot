@@ -5,7 +5,7 @@ export interface CommandRun {
     (client: Bot,
     message: Message,
     args: string[],
-    raw: string): Promise<void>;
+    raw: string): Promise<Boolean>;
 }
 
 export interface Command {

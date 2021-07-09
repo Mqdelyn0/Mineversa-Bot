@@ -1,11 +1,11 @@
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 import { Bot } from "../../MineversaClient/MineversaClient";
-import { Command, CommandRun } from "../../Interfaces/Commands";
+import { CommandRun } from "../../Interfaces/Commands";
 import { EmbedBuilder } from "../../API/EmbedBuilder";
 import { CanvasBuilder } from "../../API/CanvasBuilder";
 import { Emojis } from "../../Interfaces/Emojis";
 
-export const run: CommandRun = async(client: Bot, message: Message, args: string[]) => {
+export const run: CommandRun = async(client: Bot, message: Message, args: string[]): Promise<Boolean> => {
 
     if(args[0] === `help`) {
         let embed = new EmbedBuilder(`The correct usage of this command is:\n\`-canvas (title) (lines)\`\n\nEvery space in your titles and lines have to be a dash (-) instead of an actual space.`);
@@ -14,11 +14,12 @@ export const run: CommandRun = async(client: Bot, message: Message, args: string
         message.channel.send(embed.build());
         return;
     } else {
-        const title = args[0].replaceAll(`-`, ` `);
+
+        const title = args[0].replace(/-/g, ` `);
         const lines = [];
 
         args.splice(1).forEach(line => {
-            lines.push(line.replaceAll(`-`, ` `));
+            lines.push(line.replace(/-/g, ` `));
         });
 
         const canvas = new CanvasBuilder(title, message.author.avatarURL({ format: 'png' }));
@@ -27,16 +28,16 @@ export const run: CommandRun = async(client: Bot, message: Message, args: string
         message.channel.send(`${Emojis.ANIMATED_LOADING} Creating the Canvas from the CanvasBuilder class!`)
             .then(async(message) => {
                 const built_canvas = await canvas.build();
-                message.channel.send(built_canvas)
-                    .then(() => {
-                        message.edit(`${Emojis.ANIMATED_CHECKMARK} Finished creating the Canvas from the CanvasBuilder class!`);
-                        setTimeout(() => {
-                            message.delete();
-                        }, 2500);
-                    });
+
+                message.edit(`${Emojis.ANIMATED_CHECKMARK} Finished creating the Canvas from the CanvasBuilder class!`);
+                message.channel.send(built_canvas);
+                setTimeout(() => {
+                    message.delete();
+                }, 2500);
             });
     }
 
+    return true;
 }
 
 export const name = 'canvas';

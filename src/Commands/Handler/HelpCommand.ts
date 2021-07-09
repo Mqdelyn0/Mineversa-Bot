@@ -5,9 +5,10 @@ import { Command, CommandRun } from "../../Interfaces/Commands";
 import { PaginatedEmbeds } from "../../API/PaginatedEmbed";
 import { Emojis } from "../../Interfaces/Emojis";
 
-export const run: CommandRun = async(client: Bot, message: Message) => {
+export const run: CommandRun = async(client: Bot, message: Message): Promise<Boolean> => {
 
     const categories = [];
+    const added = [];
 
     client.getCommands().forEach((command, index) => {
         if(!categories.includes(command.category)) categories.push(command.category);
@@ -21,7 +22,10 @@ export const run: CommandRun = async(client: Bot, message: Message) => {
         const embed = new EmbedBuilder(``, `${category}`);
 
         client.getCommands().forEach((command) => {
-            if(command.category === category) embed.addField(`#${index}: ${command.name}`, `${command.description ?? `No Description Set.`}`);
+            if(command.category === category && !added.includes(command)) {
+                embed.addField(`#${index}: ${command.name}`, `${command.description ?? `No Description Set.`}`);
+                added.push(command);
+            }
          }) 
 
         embeds.push(embed.build());
@@ -31,6 +35,7 @@ export const run: CommandRun = async(client: Bot, message: Message) => {
     const paginated_embed: PaginatedEmbeds = new PaginatedEmbeds(embeds, paginated_message, message.author);
     paginated_embed.start();
 
+    return true;
 }
 
 export const name = 'help';

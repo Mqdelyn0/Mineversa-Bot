@@ -1,6 +1,6 @@
 {
     "token": "ODIxMDYxNTYzOTYwMDAwNTMy.YE-PKw.FmfPh5xo6gVwmgLxurZamXPmfxs",
-    "mongo_url": "",
+    "mongo_url": "mongodb://Mineversa:36jobgO56RJ4NkyElJNnTM5jR8yngq86MagCfpqwiH2kGXp5JJUt6Pd2oYvhlZ0TMdFuYT3RTy4cHl1Zx7QuOnb6x@vps-1.versarealms.net:27017/Mineversa?authSource=test",
     "prefix": "-",
     "guild": "798546331852472350",
 
@@ -9,10 +9,15 @@
     "suggestion_create": "830490117642125312",
     "suggestion_result": "830490204082929694",
 
-    "linked_role": "830489442443198514",
+    "support_role": "830489928911028264",
+    "ticket_category": "830861336622792715",
+    "transcripts_log": "862824702925602856",
+    "auto_deletion_warning": 24,
+    "auto_deletion_timer": 12,
 
     "welcome_bye": "830598116272504842",
 
+    "linked_role": "830489442443198514",
     "linking_roles":
     [
         "830488504219598868",

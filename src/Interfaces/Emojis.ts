@@ -15,5 +15,8 @@ export enum Emojis {
     GOLD_INGOT = "<:gold_ingot:836741902366933074>",
     MINEVERSA_LOGO = "<:Mineversa:857643425166917662>",
 
+    HEART = "❤️",
     WAVE = "👋",
+    HEADPHONES = "🎧",
+    VERTICAL_LINE = "︱"
 }

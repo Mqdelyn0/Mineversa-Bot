@@ -64,7 +64,15 @@ export const run: EventRun = async(client: Bot, message: Message) => {
         return;
     }
 
-    command_run.run(client, message, args, message.content);
+    const success = await command_run.run(client, message, args, message.content);
+    if(!success) {
+        let embed = new EmbedBuilder(`Hey <@${author.id}> :wave:\n\nIt seems like the command could not be executed properly.\nPlease try again or do \`${command_run.help_cmd}\`!`);
+        
+        embed.setColor(EmbedColors.ERROR);
+        embed.setAuthor(`Command Not Executed`, author.avatarURL());
+        message.channel.send(embed.build());
+        return;
+    }
     
 }
 

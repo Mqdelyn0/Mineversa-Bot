@@ -6,8 +6,7 @@ import { Event } from '../Interfaces/Events';
 import { Config } from '../Interfaces/Config';
 
 import glob from 'glob';
-import { Connection } from 'mongoose';
-import mongoose from 'mongoose';
+import mongoose, { Connection } from 'mongoose';
 
 const glob_promise = promisify(glob);
 
@@ -17,7 +16,7 @@ class Bot extends Client {
     private config: Config;
     private commands: Collection<string, Command> = new Collection();
     private events: Collection<string, Event> = new Collection();
-    private mongo: Connection;
+    private mongo: mongoose.Connection;
 
     public constructor() {
         super({ ws: { intents: Intents.ALL}, 
@@ -27,11 +26,16 @@ class Bot extends Client {
             disableMentions: `everyone`
         });
 
-        // const connection = mongoose.createConnection(this.getConfig());
     }
 
-    public async start(config: Config): Promise<void> {
+    public async start(config: Config, mongo: Connection): Promise<void> {
         this.config = config;
+        if(mongo !== undefined) {
+            this.mongo = mongo;
+
+            this.getLogger().log(`Logged into MongoDB!`);
+        }
+
         super.login(config.token);
 
         const command_files: string[] = await glob_promise(`${__dirname}/../Commands/**/*{.ts,.js}`);
@@ -63,7 +67,6 @@ class Bot extends Client {
             }
 
             if(valid_command) {
-                this.events.set(file.name, file);
 
                 if(file.aliases) {
                     file.aliases.forEach(alias => {
@@ -124,8 +127,16 @@ class Bot extends Client {
         return this.commands;
     }
 
-    public prettifyNumber(num: number): String {
+    public prettifyNumber(num: number): string {
         return num.toLocaleString(`en-US`, {maximumFractionDigits:2})
+    }
+
+    public getUserIdFromPing(ping: string): string {
+        return ping.replace(/[<!@>]/g, "");
+    }
+
+    public getMongo(): Connection {
+        return this.mongo;
     }
 
 }

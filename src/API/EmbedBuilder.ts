@@ -33,6 +33,10 @@ export class EmbedBuilder {
         this._embed.setTimestamp();
     }
 
+    public setDescription(desc: string) {
+        this._embed.setDescription(desc);
+    }
+
     public build(): MessageEmbed {
         this._embed.setColor(this._color);
         this._embed.setFooter(this._footer);

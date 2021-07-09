@@ -9,7 +9,13 @@ export interface Config {
     suggestion_create: string;
     suggestion_result: string;
 
-    welcome_bye: string,
+    support_role: string;
+    ticket_category: string;
+    transcripts_log: string;
+    auto_deletion_warning: Number;
+    auto_deletion_timer: Number;
+
+    welcome_bye: string;
 
     linked_role: string;
     linking_roles: string[];

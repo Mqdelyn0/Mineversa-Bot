@@ -16,23 +16,23 @@ export const run: EventRun = async(client: Bot, member: GuildMember) => {
     
     const channel = client.channels.cache.get(client.getConfig().welcome_bye) as TextChannel;
 
-    const canvas = new CanvasBuilder(`Welcome to ${member.guild.name}!`, member.user.displayAvatarURL({ format: 'png' }));
-    canvas.addText(`Make sure to read our #rules and #faq!`);
-    canvas.addText(`Mineversa is currently in Season 1`);
+    const canvas = new CanvasBuilder(`See you from ${member.guild.name}!`, member.user.displayAvatarURL({ format: 'png' }));
+    canvas.addText(`We are sad to see you go from Mineversa`);
+    canvas.addText(`We hoped you enjoyed your`);
+    canvas.addText(`stay while you were here!`);
     canvas.addText(` `);
-    canvas.addText(`Discord: https://discord.mineversa.net/`);
-    canvas.addText(`Store: https://store.mineversa.net/`);
-    canvas.addText(`Server IP: play.mineversa.net`);
+    canvas.addText(`Madelyn,`);
+    canvas.addText(`${Emojis.HEART} Management of Mineversa.`);
 
     channel.send(`${Emojis.ANIMATED_LOADING} Loading a canvas from CanvasBuilder`)
         .then(async(message) => {
             const send_canvas = await canvas.build();
             message.channel.send(send_canvas)
                 .then(() => {
-                    message.edit(`${Emojis.WAVE} Welcome our new user!`);
+                    message.edit(`${Emojis.WAVE} Say bye to ${member.user.tag} :(!`);
                 });
         });
 
 }
 
-export const name = 'guildMemberAdd';
+export const name = 'guildMemberRemove';
