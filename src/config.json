@@ -1,6 +1,6 @@
 {
     "token": "ODIxMDYxNTYzOTYwMDAwNTMy.YE-PKw.FmfPh5xo6gVwmgLxurZamXPmfxs",
-    "mongo_url": "mongodb://Mineversa:36jobgO56RJ4NkyElJNnTM5jR8yngq86MagCfpqwiH2kGXp5JJUt6Pd2oYvhlZ0TMdFuYT3RTy4cHl1Zx7QuOnb6x@vps-1.versarealms.net:30000/Mineversa",
+    "mongo_url": "mongodb://Mineversa:36jobgO56RJ4NkyElJNnTM5jR8yngq86MagCfpqwiH2kGXp5JJUt6Pd2oYvhlZ0TMdFuYT3RTy4cHl1Zx7QuOnb6x@vps-1.versarealms.net:30000/Mineversa?authSource=test",
     "prefix": "-",
     "guild": "798546331852472350",
 

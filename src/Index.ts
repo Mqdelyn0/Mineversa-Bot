@@ -8,6 +8,7 @@ import mongoose, { Connection } from 'mongoose';
     const connection = await mongoose.connect(config.mongo_url, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        ssl: false
     }) as unknown as Connection;
 
     new Bot().start(config, connection);
