@@ -1,5 +1,5 @@
 import consola, { Consola } from 'consola';
-import { Client, Intents, Collection } from 'discord.js';
+import { Client, Intents, Collection, Guild } from 'discord.js';
 import { promisify } from 'util';
 import { Command } from '../Interfaces/Commands';
 import { Event } from '../Interfaces/Events';
@@ -17,6 +17,7 @@ class Bot extends Client {
     private commands: Collection<string, Command> = new Collection();
     private events: Collection<string, Event> = new Collection();
     private mongo: mongoose.Connection;
+    private guild: Guild;
 
     public constructor() {
         super({ ws: { intents: Intents.ALL}, 
@@ -113,6 +114,11 @@ class Bot extends Client {
             valid_event = true;
             errors = [];
         });
+
+        this.once(`ready`, () =>{
+            this.setGuild();
+        })
+
     }
 
     public getLogger(): Consola {
@@ -137,6 +143,15 @@ class Bot extends Client {
 
     public getMongo(): Connection {
         return this.mongo;
+    }
+
+    public getGuild(): Guild {
+        return this.guild; 
+    }
+
+    public setGuild() {
+        console.log(this);
+        this.guild = this.guilds.cache.find(guild => guild.id === `${this.getConfig().guild}`) as Guild;
     }
 
 }

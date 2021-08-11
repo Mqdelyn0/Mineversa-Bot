@@ -1,6 +1,7 @@
 import { prop, getModelForClass } from "@typegoose/typegoose";
 import { ModelType } from "@typegoose/typegoose/lib/types";
 import { GuildChannel, GuildChannelManager, User } from "discord.js";
+import { Query } from "mongoose";
 
 export class Ticket {
     @prop({ required: true })
@@ -25,13 +26,15 @@ export class Ticket {
     public added_users?: String[];
 
     static async findTicketByCreatorId(this: ModelType<Ticket>, user: User) {
-        const query = await this.find({ creator: user.id });
+        let query;
+        if(user.id) query = await this.find({ creator: user.id });
 
         return query;
     }
 
     static async findTicketByChannelId(this: ModelType<Ticket>, channel: GuildChannel) {
-        const query = await this.find({ channel: channel.id });
+        let query;
+        if(channel.id !== undefined) query = await this.find({ channel: channel.id });
 
         return query;
     }

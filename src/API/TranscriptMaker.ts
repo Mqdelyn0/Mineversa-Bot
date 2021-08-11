@@ -81,7 +81,7 @@ export class TranscriptMaker {
             let formatted_message = `\n`;
 
             formatted_message = `${formatted_message}[${message.author.username}, ${message.author.tag}]`;
-            formatted_message = `${formatted_message} ${message.createdAt.toLocaleString(`en-US`, { timeZone: `PST` })}`;
+            formatted_message = `${formatted_message} ${message.createdAt.toLocaleString(`en-US`, { timeZone: `America/Los_Angeles` })}`;
             formatted_message = `${formatted_message}: ${message.content}`;
 
             messages.push(formatted_message);
