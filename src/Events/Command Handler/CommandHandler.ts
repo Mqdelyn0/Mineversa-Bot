@@ -13,7 +13,7 @@ import { Command, CommandRun } from "../../Interfaces/Commands";
 // run?: CommandRun | undefined;
 
 export const run: EventRun = async(client: Bot, message: Message) => {
-    if(message.author.bot || !message.content.startsWith(client.getConfig().prefix)) return;
+    if(message.author.bot || !message.content.startsWith(client.getConfig().prefix) || message.channel.type === "dm") return;
 
     const { author, member } = message;
 
@@ -23,11 +23,11 @@ export const run: EventRun = async(client: Bot, message: Message) => {
 
     const command_run: Command = client.getCommands().get(command);
     if(!command_run) {
-        let embed = new EmbedBuilder(`Hey <@${author.id}> :wave:\n\nThe command you tried doing is invalid!\nTry doing \`-help\` for the commands!`);
+        let embed = new EmbedBuilder(`Hey <@${author.id}> :wave:\n\nThe command you tried doing is invalid!\nTry doing \`-help\` in the discord for the commands!`);
         
         embed.setColor(EmbedColors.ERROR);
-        embed.setAuthor(`Unkown Command`, author.avatarURL());
-        message.channel.send(embed.build());
+        embed.setAuthor(`Unknown Command`, author.avatarURL());
+        message.author.send(embed.build());
         return;
     }
 

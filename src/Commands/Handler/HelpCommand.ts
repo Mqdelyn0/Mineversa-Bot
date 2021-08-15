@@ -26,7 +26,7 @@ export const run: CommandRun = async(client: Bot, message: Message): Promise<Boo
                 embed.addField(`#${index}: ${command.name}`, `${command.description ?? `No Description Set.`}`);
                 added.push(command);
             }
-         }) 
+        });
 
         embeds.push(embed.build());
     });
