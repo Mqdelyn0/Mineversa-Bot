@@ -7,11 +7,14 @@ import { Config } from '../Interfaces/Config';
 
 import glob from 'glob';
 import mongoose, { Connection } from 'mongoose';
+import { TicketScheduler } from '../API/TicketScheduler';
 
 const glob_promise = promisify(glob);
 
 class Bot extends Client {
 
+    private static instance: Bot;
+    private static ticketScheduler: TicketScheduler;
     private logger: Consola = consola;
     private config: Config;
     private commands: Collection<string, Command> = new Collection();
@@ -26,7 +29,15 @@ class Bot extends Client {
             messageEditHistoryMaxSize: 500,
             disableMentions: `everyone`
         });
+        Bot.instance = this;
+    }
 
+    public static getInstance(): Bot {
+        return Bot.instance;
+    }
+
+    public static getTicketScheduler(): TicketScheduler {
+        return Bot.ticketScheduler;
     }
 
     public async start(config: Config, mongo: Connection): Promise<void> {
@@ -117,8 +128,8 @@ class Bot extends Client {
 
         this.once(`ready`, () =>{
             this.setGuild();
-        })
-
+            Bot.ticketScheduler = new TicketScheduler();
+        });
     }
 
     public getLogger(): Consola {

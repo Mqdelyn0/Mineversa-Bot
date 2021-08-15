@@ -6,6 +6,7 @@ import { Emojis } from "../../Interfaces/Emojis";
 import { Ticket, TicketModel } from "../../Models/TicketModel";
 import { TranscriptMaker } from "../../API/TranscriptMaker";
 import { RoleCheck } from "../../API/RoleCheck";
+import { DocumentType } from "@typegoose/typegoose";
 
 export const run: CommandRun = async(client: Bot, message: Message, args: string[]): Promise<Boolean> => {
 
@@ -52,7 +53,7 @@ export const run: CommandRun = async(client: Bot, message: Message, args: string
             const model: Ticket = {
                 channel: channel.id,
                 creator: message.member.id,
-                reason: reason
+                reason: reason,
             };
             TicketModel.createTicket(model);
 
@@ -64,8 +65,8 @@ export const run: CommandRun = async(client: Bot, message: Message, args: string
 
             embed.setDescription(`Welcome to your ticket! Support staff will come to help you soon. Briefly describe what you need, and if staff doesn't respond, you may ping them __once__. Close the ticket when your problem is solved!\n\nReason: ${reason}`);
             channel.send(embed.build());
-            return true;
         });
+        return true;
     } else if(args[0] === "delete") {
         const model = await TicketModel.findTicketByCreatorId(message.author);
 
@@ -81,25 +82,10 @@ export const run: CommandRun = async(client: Bot, message: Message, args: string
         } else if(model[0]) {
             embed.setDescription(`Deleted your ticket!`);
             message.channel.send(embed.build());
-
-            const ticket_channel = message.channel as TextChannel;
-
-            const transcript = new TranscriptMaker(client, ticket_channel);
-            const attachment = await transcript.build();
-
-            const transcripts_channel = client.channels.cache.get(client.getConfig().transcripts_log) as TextChannel;
-            
-            embed = new EmbedBuilder(`Here's the Transcript Log for ${message.author.tag}'s recent ticket!\nReason: ${model[0].reason}`);
-            embed.setAuthor(`Ticket Transcript`, message.author.displayAvatarURL());
-            embed.setFooter(EmbedFooters.TICKET);
-
-            transcripts_channel.send(embed.build());
-            transcripts_channel.send(attachment);
                 
             const channel = client.channels.cache.get(`${model[0].channel}`) as GuildChannel;
 
             TicketModel.deleteTicket(channel);
-            channel.delete();
             return true;
         }
     } else if(args[0] === "adduser") {
@@ -179,7 +165,7 @@ export const run: CommandRun = async(client: Bot, message: Message, args: string
             return true;
         }
     } else if(args[0] === "deleteall") {
-        if(new RoleCheck(message.member, [`Director`, `Manager`, `Developer`, `Admin`])) {
+        if(RoleCheck.getResult(message.member, ["Director", "Manager"])) {
             let tickets = await TicketModel.find({ });
             let amountOfTickets = tickets.length;
             let amountOfDeleted = 0;
@@ -198,16 +184,54 @@ export const run: CommandRun = async(client: Bot, message: Message, args: string
 
             message.channel.send(embed.build());
         } else {
-            let embed = new EmbedBuilder(`You don't have permission to do this!\n\nYou need one of the roles:\nDirector, Manager, Developer, Admin`, ``);
+            let embed = new EmbedBuilder(`You don't have permission to do this!\n\nYou need one of the roles:\nDirector, Manager`, ``);
             embed.setColor(EmbedColors.ERROR);
             embed.setAuthor(`No Permission`, message.author.avatarURL());
 
             message.channel.send(embed.build());
         }
+        return true;
     } else if(args[0] === "evadedeletion") {
-        
+        if((message.channel as GuildChannel).parentID !== client.getConfig().ticket_category) {
+            const embed = new EmbedBuilder(`You must be in a ticket to run this command.`);
+            embed.setColor(EmbedColors.ERROR);
+            message.channel.send(embed.build());
+            return;
+        }
+        const ticket = (await TicketModel.findTicketByChannelId(message.channel as GuildChannel))[0];
+        ticket.auto_deletion = false;
+        ticket.updateOne(ticket);
+        ticket.save();
+
+        const embed = new EmbedBuilder(`This ticket is ${ticket.auto_deletion ? 'now susceptible' : 'no longer suspectible'} to auto-deletion from inactivity.`);
+        embed.setColor(EmbedColors.SUCCESS);
+        embed.setFooter(EmbedFooters.TICKET);
+        message.channel.send(embed.build());
+        return true;
     } else if(args[0] === "answer") {
-        
+        if(RoleCheck.getResult(message.member, ["Support"])) {
+            const guildChannel = message.channel as GuildChannel;
+            if(guildChannel.parentID !== client.getConfig().ticket_category) {
+                const embed = new EmbedBuilder(`You must be in a ticket to run this command.`);
+                embed.setColor(EmbedColors.ERROR);
+                message.channel.send(embed.build());
+                return;
+            }
+            const ticket = (await TicketModel.findTicketByChannelId(message.channel as GuildChannel))[0];
+            const creator = client.users.cache.get(ticket.creator as string);
+            guildChannel.setName(`🎧︱responded-${creator.username}`);
+            const embed = new EmbedBuilder(`Ticket marked as responded.`);
+            embed.setColor(EmbedColors.SUCCESS);
+            message.channel.send(embed.build());
+            return true;
+        } else {
+            let embed = new EmbedBuilder(`You don't have permission to do this!\n\nYou need one of the roles:\nSupport`, ``);
+            embed.setColor(EmbedColors.ERROR);
+            embed.setAuthor(`No Permission`, message.author.avatarURL());
+
+            message.channel.send(embed.build());
+            return true;
+        }
     }
 
     return false;

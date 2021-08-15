@@ -6,17 +6,15 @@ import { Bot } from "../MineversaClient/MineversaClient";
 export class TranscriptMaker {
 
     private _channel: TextChannel;
-    private _client: Bot;
-    private _guild: Guild;
     private _messages: Array<Message> = new Array();
 
-    public constructor(client: Bot, channel: TextChannel) {
+    public constructor(channel: TextChannel) {
         this._channel = channel;
-        this._client = client;
-        this._guild = client.guilds.cache.first()
     }
 
     public async build(): Promise<MessageAttachment> {
+
+        if(!(await fs.readdir(path.resolve(__dirname, "../.."))).includes("temp")) await fs.mkdir(path.resolve(__dirname, "../../temp"));
 
         let messages_fetched = 0;
         let last_message;

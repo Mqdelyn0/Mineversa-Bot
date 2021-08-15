@@ -12,7 +12,6 @@ export const run: CommandRun = async(client: Bot, message: Message, args: string
         embed.setAuthor(`Canvas Command`, message.author.avatarURL());
 
         message.channel.send(embed.build());
-        return;
     } else {
 
         const title = args[0].replace(/-/g, ` `);

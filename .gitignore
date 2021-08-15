@@ -5,3 +5,6 @@ dist
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
+node_modules
+temp
+src/config.json
